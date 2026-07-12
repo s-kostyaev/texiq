@@ -1,0 +1,10 @@
+File: dir, Node: Top
+
+* Menu:
+
+development
+* Compiler: (compiler)Top. Duplicate from lower-precedence directory.
+* Formatter: (formatter)Top. Format programs.
+
+Editors
+* Emacs: (emacs)Top. Extensible editor.

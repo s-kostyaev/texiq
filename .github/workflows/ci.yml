@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        ocaml-compiler: [5.1.1, 5.4.1]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ocaml/setup-ocaml@v3.6.1
+        with:
+          ocaml-compiler: ${{ matrix.ocaml-compiler }}
+          dune-cache: true
+      - run: opam install . --deps-only --with-test
+      - run: opam exec -- dune build @all
+      - run: opam exec -- dune runtest
+      - run: opam lint texiq.opam
+
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ocaml/setup-ocaml@v3.6.1
+        with:
+          ocaml-compiler: 5.4.1
+          dune-cache: true
+      - name: Build and install the opam package
+        run: opam install . --with-test --yes
+      - run: sudo apt-get update && sudo apt-get install --yes texinfo
+      - name: Smoke-test the installed executable
+        run: opam exec -- scripts/smoke_test.sh "$(opam var bin)/texiq" 1.0.0
+      - name: Compare selected node text with GNU Info
+        run: scripts/differential_test.sh "$(opam var bin)/texiq"
+
+  formatting:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ocaml/setup-ocaml@v3.6.1
+        with:
+          ocaml-compiler: 5.4.1
+      - run: opam install ocamlformat
+      - run: opam exec -- dune fmt --preview
+      - run: git diff --exit-code

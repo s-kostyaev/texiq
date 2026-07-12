@@ -38,3 +38,31 @@ and JSON values. Fixture traversal and results use explicit stable ordering.
 
 Compare baseline whole-manual reads, GNU `info --subnodes`, scoped manual
 queries, and full catalog search followed by targeted extraction.
+
+Run the deterministic parser benchmark with:
+
+```sh
+dune exec bench/benchmark_check.exe -- -nodes 5000 -iterations 5
+```
+
+The automated differential check uses installed GNU Info as an oracle:
+
+```sh
+scripts/differential_test.sh _build/default/bin/main.exe
+```
+
+## Distribution checks
+
+`dune runtest` includes black-box CLI checks for help/version output, text,
+raw text, JSON, JSONL, failure status, and byte-identical repeated queries.
+The reusable package smoke test verifies a built or installed executable:
+
+```sh
+scripts/smoke_test.sh _build/default/bin/main.exe 1.0.0
+```
+
+CI additionally installs `texiq.opam` into an opam switch, runs the smoke test
+against the installed executable, and compares exact node output with GNU
+Info. A release tag must be `v` followed by
+the version in `dune-project`; release verification and both packaged-binary
+smoke tests must succeed before the publish job can run.

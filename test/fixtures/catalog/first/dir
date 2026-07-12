@@ -1,0 +1,10 @@
+File: dir, Node: Top
+
+* Menu:
+
+Development
+* Compiler: (compiler)Top. Compile programs.
+* Debugger: (debugger)Top. Debug programs.
+
+Utilities
+* Shell: (shell). Command shell.

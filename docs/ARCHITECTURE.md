@@ -26,6 +26,9 @@ The project follows Jane Street-style OCaml conventions:
 deterministic synchronous pipeline. Parallel scanning may be added only after
 the sequential contract and ordering are covered by tests.
 
+Gzip input uses the pure OCaml `decompress` implementation with compressed and
+expanded byte limits. Regex search uses Jane Street's RE2 binding.
+
 ## Data flow
 
 ```text

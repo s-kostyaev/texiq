@@ -1,0 +1,5 @@
+(executable
+ (name benchmark_check)
+ (libraries core core_unix.command_unix texiq)
+ (preprocess
+  (pps ppx_jane)))

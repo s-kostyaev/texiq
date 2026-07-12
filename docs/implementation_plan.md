@@ -1,9 +1,13 @@
 # Implementation plan
 
+Status: complete for v1.0.0.
+
 Stages are ordered vertical slices. A stage is complete only when its checks,
 fixtures, documentation updates, and acceptance scenario pass.
 
 ## M0: contract and project harness
+
+Implementation status: complete.
 
 - Establish the Jane Street OCaml/Dune project skeleton.
 - Lock the PRD, architecture, exit status, result ordering, and diagnostics
@@ -16,6 +20,8 @@ planned top-directory default without exposing unimplemented selectors.
 
 ## M1: top directory catalog
 
+Implementation status: complete.
+
 - Implement effective `INFOPATH` and `-d/--directory` precedence.
 - Parse supported `dir` filename variants and compressed directory files.
 - Merge categories and entries with stable provenance and deduplication.
@@ -26,6 +32,8 @@ Acceptance: `texiq` produces a stable merged view for multiple fixture `dir`
 files and matches the relevant entries in GNU Info/Emacs directory output.
 
 ## M2: manual loading and node graph
+
+Implementation status: complete.
 
 - Resolve an Info name or explicit main-file path.
 - Add gzip and split-manual loading.
@@ -39,6 +47,8 @@ Acceptance: nonsplit and split fixtures plus installed `info-stnd` and
 
 ## M3: typed query core
 
+Implementation status: complete.
+
 - Complete lexer, parser, AST, and type checker.
 - Add pipes, field access, `filter`, `map`, comparisons, boolean operations,
   indexing, slicing, and `.length`.
@@ -50,6 +60,8 @@ queries identify the invalid stage, current type, and a valid next action.
 
 ## M4: Info entities and scoped search
 
+Implementation status: complete.
+
 - Parse menus, multiline descriptions, xrefs, anchors, and index entries.
 - Add `.menus`, `.xrefs`, `.indices`, and literal/regex `.search` for a manual.
 - Produce bounded snippets with exact node and line locations.
@@ -58,6 +70,8 @@ Acceptance: agent scenarios discover, narrow, and extract answers without
 reading a whole manual.
 
 ## M5: global catalog search
+
+Implementation status: complete.
 
 - Traverse manuals registered by the merged catalog.
 - Parse each source once per invocation and continue with coverage diagnostics.
@@ -70,6 +84,10 @@ compressed, duplicate, and partially broken manual sets with stable ordering.
 
 ## M6: hardening and distribution
 
+Implementation status: complete. Release artifacts are produced only after
+source, package, differential, version, and packaged-binary verification
+succeeds.
+
 - Add fuzz/property tests for parser boundaries and malformed offsets.
 - Benchmark startup, global scan, allocation, output size, and context savings.
 - Add an optional versioned parse cache only if benchmarks justify it.
@@ -78,3 +96,8 @@ compressed, duplicate, and partially broken manual sets with stable ordering.
 
 Acceptance: release artifacts pass fixture, differential, package, and agent
 workflow suites on supported platforms.
+
+Benchmark result: the v1 parser processes a synthetic 5,000-node, 418 KiB
+manual five times in roughly 180–220 ms on the development host. This does not
+justify the invalidation and schema complexity of a persistent cache for v1;
+the decision and reproduction command are recorded in `docs/PERFORMANCE.md`.

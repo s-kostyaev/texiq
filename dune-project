@@ -1,5 +1,6 @@
 (lang dune 3.17)
 (name texiq)
+(version 1.0.0)
 
 (package
  (name texiq)
@@ -11,6 +12,7 @@
   (dune (>= 3.17))
   core
   core_unix
+  (decompress (>= 1.5.3))
   ppx_jane
   ppx_expect
   re2
@@ -18,3 +20,5 @@
 
 (formatting
  (enabled_for ocaml dune))
+
+(cram enable)

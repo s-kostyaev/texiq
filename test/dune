@@ -1,0 +1,6 @@
+(library
+ (name integration_tests)
+ (libraries core core_unix texiq)
+ (inline_tests)
+ (preprocess
+  (pps ppx_jane)))

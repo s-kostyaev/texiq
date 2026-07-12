@@ -1,3 +1,10 @@
+(rule
+ (targets version.ml)
+ (action
+  (with-stdout-to
+   %{targets}
+   (echo "let value = \"%{version:texiq}\""))))
+
 (executable
  (name main)
  (public_name texiq)

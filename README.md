@@ -17,8 +17,8 @@ texiq texinfo '.tree'
 texiq texinfo '.node("Info Format Indirect Table") | .text'
 ```
 
-The project is currently at the architecture bootstrap stage. The product
-contract is in [docs/PRD.md](docs/PRD.md), the design is in
+The project implements the planned catalog, parser, graph, query, search, and
+rendering pipeline. The product contract is in [docs/PRD.md](docs/PRD.md), the design is in
 [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), and staged delivery is tracked in
 [docs/implementation_plan.md](docs/implementation_plan.md).
 
@@ -40,8 +40,26 @@ contract is in [docs/PRD.md](docs/PRD.md), the design is in
 dune build
 dune runtest
 dune fmt
+dune exec bench/benchmark_check.exe -- -nodes 5000 -iterations 5
+```
+
+Install from a checkout with:
+
+```sh
+opam install . --deps-only
+dune build -p texiq
+dune install
 ```
 
 ## License
 
 MIT
+
+## Distribution
+
+Git tags matching the version in `dune-project`, with a `v` prefix, trigger
+verified Linux x86-64 and macOS arm64 binary artifacts. Before publication the
+workflow runs the source tests, package build, version check, and a packaged-CLI
+smoke test on both artifact platforms. The opam manifest is `texiq.opam`; a
+release-substitution Homebrew formula is provided in
+`packaging/homebrew/texiq.rb.in`.

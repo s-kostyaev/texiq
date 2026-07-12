@@ -1,6 +1,6 @@
 # Product requirements: texiq v1
 
-Status: planned
+Status: implemented in v1.0.0
 License: MIT
 
 ## Summary
@@ -88,7 +88,7 @@ Manual selectors:
 
 ```text
 .summary .tree([max_depth]) .nodes .node(name) .search(pattern)
-.menus .xrefs .indices .text .length
+.menus .xrefs .indices .anchors .text .length
 ```
 
 The initial v1 expression language supports field access, strings, integers,
@@ -101,12 +101,13 @@ for example `.search("/garbage collect(or|ion)/i")`.
 ## Top directory semantics
 
 The catalog is a virtual structure composed from `dir`, `DIR`, `dir.info`,
-`DIR.INFO`, or compressed equivalents found along the effective Info path.
+`DIR.INFO`, or `dir.gz` found along the effective Info path.
 
 1. Search-directory precedence is preserved.
-2. Categories with case-insensitively equal names are merged using the first
-   spelling in precedence order.
-3. Entries with the same `(label, manual, node)` are deduplicated.
+2. Category spelling is exact; case-distinct headings remain distinct, matching
+   GNU Info's observable directory surface.
+3. Entries with the same `(category, label, manual, node)` are deduplicated;
+   the same target may intentionally remain visible under different categories.
 4. Every category and entry retains its source path and precedence rank.
 5. `.manuals` contains manuals registered by catalog entries; unregistered
    files are not silently added.
@@ -115,12 +116,29 @@ On a catalog, `.search(pattern)` performs full-text containment search across
 registered manuals. Metadata-only discovery remains cheap and explicit through
 `.entries | filter(...)`.
 
+This global scan is a `texiq` extension. Unlike GNU Info's ordinary search it
+does not remain inside one manual, and unlike `apropos` it is not restricted to
+index entries. Only the first resolvable source for each registered manual id
+is scanned; external references are not followed.
+
 Global search results contain manual, node, line, column, match, bounded
 snippet, and source path. Results sort by Info-path precedence, normalized
 manual name, node byte position, line, and match offset.
 
 The evaluator operates on the complete result stream. The renderer applies the
 default output cap and reports `matched_total`, `returned`, and `truncated`.
+
+Literal matching uses deterministic byte-oriented case folding. Regex mode
+uses RE2, avoiding catastrophic backtracking. Lines and columns are one-based;
+byte offsets remain available separately.
+
+## Info path semantics
+
+Repeated `-d/--directory` entries come first in command-line order. If
+`INFOPATH` is unset, `texiq` uses its existing conventional platform
+directories. A trailing path separator appends those defaults. Leading or
+doubled empty components are dropped instead of resolving to the current
+directory. Canonical duplicates retain their first occurrence.
 
 ## Info compatibility
 

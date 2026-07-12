@@ -1,0 +1,14 @@
+This is an Info fixture.
+Local Variables:
+coding: utf-8
+End:
+{{US}}
+File: sample.info,  Node: Top,  Next: First,  Up: (dir)
+Sample manual.
+
+* Menu:
+* First:: The first chapter.
+{{US}}
+File: sample.info,  Node: First,  Prev: Top,  Up: Top
+First chapter contains a deterministic Needle.
+See *Note Top:: for the menu.

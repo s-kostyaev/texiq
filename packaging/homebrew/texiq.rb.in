@@ -1,0 +1,15 @@
+class Texiq < Formula
+  desc "Agent-first query CLI for GNU Info manuals"
+  homepage "https://github.com/s-kostyaev/texiq"
+  url "https://github.com/s-kostyaev/texiq/releases/download/v@VERSION@/texiq-macos-arm64.tar.gz"
+  sha256 "@SHA256@"
+  license "MIT"
+
+  def install
+    bin.install "texiq"
+  end
+
+  test do
+    assert_match "Query GNU Info manuals", shell_output("#{bin}/texiq -help")
+  end
+end

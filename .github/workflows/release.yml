@@ -1,0 +1,76 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ocaml/setup-ocaml@v3.6.1
+        with:
+          ocaml-compiler: 5.4.1
+          dune-cache: true
+      - run: opam install . --deps-only --with-test
+      - run: sudo apt-get update && sudo apt-get install --yes texinfo
+      - name: Run source and package verification
+        run: |
+          opam exec -- dune build @all
+          opam exec -- dune runtest
+          opam exec -- dune build -p texiq
+          opam lint texiq.opam
+          scripts/differential_test.sh _build/default/bin/main.exe
+      - name: Verify release version and CLI workflow
+        run: scripts/smoke_test.sh _build/default/bin/main.exe "${GITHUB_REF_NAME#v}"
+
+  build:
+    needs: verify
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            artifact: texiq-linux-x86_64
+          - os: macos-15
+            artifact: texiq-macos-arm64
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ocaml/setup-ocaml@v3.6.1
+        with:
+          ocaml-compiler: 5.4.1
+      - run: opam install . --deps-only
+      - run: opam exec -- dune build bin/main.exe
+      - name: Package binary
+        run: |
+          mkdir dist
+          cp _build/default/bin/main.exe dist/texiq
+          chmod +x dist/texiq
+          tar -C dist -czf ${{ matrix.artifact }}.tar.gz texiq
+      - name: Smoke-test packaged binary
+        run: |
+          mkdir dist/smoke
+          tar -C dist/smoke -xzf ${{ matrix.artifact }}.tar.gz
+          scripts/smoke_test.sh dist/smoke/texiq "${GITHUB_REF_NAME#v}"
+      - uses: actions/upload-artifact@v7.0.1
+        with:
+          name: ${{ matrix.artifact }}
+          path: ${{ matrix.artifact }}.tar.gz
+
+  publish:
+    needs: [verify, build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v8.0.1
+        with:
+          pattern: texiq-*
+          path: artifacts
+          merge-multiple: true
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "${GITHUB_REF_NAME}" artifacts/*.tar.gz --repo "${GITHUB_REPOSITORY}" --generate-notes
