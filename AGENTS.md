@@ -10,6 +10,7 @@
 - Validation strategy: `docs/TESTING.md`
 - Performance baseline and cache decision: `docs/PERFORMANCE.md`
 - Agent usage and recovery: `docs/agent-playbook.md`
+- Installable agent workflow: `skills/texiq/SKILL.md`
 
 Read the relevant document before changing its corresponding contract. Do not
 mirror these documents into this file.

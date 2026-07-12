@@ -51,6 +51,19 @@ dune build -p texiq
 dune install
 ```
 
+## Agent skill
+
+The installable agent workflow lives in [`skills/texiq`](skills/texiq). It
+teaches agents to discover manuals from `(dir)Top`, narrow with bounded search,
+and extract only the selected node text. Link that canonical directory into a
+supported skill scope rather than copying it, so repository updates remain
+visible:
+
+```sh
+ln -s "$PWD/skills/texiq" "${CODEX_HOME:-$HOME/.codex}/skills/texiq"
+ln -s "$PWD/skills/texiq" "$HOME/.emacs.d/ellama/skills/texiq"
+```
+
 ## License
 
 MIT

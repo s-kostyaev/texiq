@@ -1,0 +1,4 @@
+interface:
+  display_name: "texiq"
+  short_description: "Query GNU Info manuals with bounded context"
+  default_prompt: "Use $texiq to discover the relevant Info manual, narrow to a node, and extract only the needed text."
