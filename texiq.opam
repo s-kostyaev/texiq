@@ -1,0 +1,26 @@
+opam-version: "2.0"
+synopsis: "Agent-first query CLI for GNU Info manuals"
+description: """
+texiq is a deterministic, structure-first CLI for querying the merged Info
+directory and GNU Info manuals without loading whole manuals into an agent's
+context.
+"""
+maintainer: ["Sergey Kostyaev"]
+authors: ["Sergey Kostyaev"]
+license: "MIT"
+homepage: "https://github.com/s-kostyaev/texiq"
+bug-reports: "https://github.com/s-kostyaev/texiq/issues"
+dev-repo: "git+https://github.com/s-kostyaev/texiq.git"
+depends: [
+  "ocaml" {>= "5.1"}
+  "dune" {>= "3.17"}
+  "core"
+  "core_unix"
+  "ppx_jane"
+  "ppx_expect"
+  "re2"
+  "yojson"
+]
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+]

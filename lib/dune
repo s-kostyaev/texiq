@@ -1,0 +1,7 @@
+(library
+ (name texiq)
+ (public_name texiq)
+ (libraries core)
+ (inline_tests)
+ (preprocess
+  (pps ppx_jane)))
