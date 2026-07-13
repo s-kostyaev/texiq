@@ -41,3 +41,32 @@ dune runtest
 dune fmt
 git diff --check
 ```
+
+## Release discipline
+
+Read the Distribution checks in `docs/TESTING.md` before changing the project
+version or publishing a release.
+
+- Do not change the version in `dune-project` during ordinary implementation.
+  Bump it only when the user has asked to prepare or publish a release.
+- Preparing and publishing are different authorization scopes. If the user
+  asked only to prepare a release, stop before creating or pushing a tag and
+  report that the version is unreleased.
+- Once an authorized release version is committed to `main`, do not report the
+  release complete until an annotated `v<VERSION>` tag points at the exact
+  release commit, the tag is pushed, the Release workflow succeeds, and the
+  GitHub Release contains both Linux x86-64 and macOS arm64 artifacts.
+- Release tags are immutable. Never move or overwrite an existing tag; fix a
+  published release forward with a new version.
+- A successful branch CI run is not evidence that a GitHub Release exists.
+
+Use this post-release audit before handoff:
+
+```sh
+VERSION=$(sed -n 's/^(version \(.*\))$/\1/p' dune-project)
+TAG="v$VERSION"
+test "$(git rev-list -n 1 "$TAG")" = "$(git rev-parse HEAD)"
+test "$(gh run list --workflow release.yml --branch "$TAG" --limit 1 --json conclusion --jq '.[0].conclusion')" = success
+gh release view "$TAG" --json tagName,url,assets
+git status --short --branch
+```
