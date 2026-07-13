@@ -65,6 +65,9 @@ texiq bash '.search("parameter expansion")[0:5]'
 - Use `--raw-output` only with text format and a scalar string such as `.text`.
 - Use explicit repeated `-d DIR` flags when reproducible Info-path precedence
   matters.
+- Use `--emacs` when a manual is registered only in the active Emacs
+  `Info-directory-list`; explicit `-d` directories still have higher
+  precedence.
 
 For automation, parse structured fields rather than scraping text rendering:
 
@@ -87,9 +90,13 @@ texiq --format json texinfo '.search("tag table")[0:5]'
 2. On `E_QUERY_PARSE` or `E_QUERY_TYPECHECK`, follow the reported stage and
    hint; change only the invalid expression.
 3. On `E_MANUAL_RESOLVE`, inspect `texiq dir '.manuals | map(.name)'`, verify
-   `INFOPATH`, or pass `-d DIR`.
-4. On exit `2`, fix the path, permissions, compression, or resolution problem.
-5. On exit `3`, treat the manual as structurally incomplete. Use best-effort
+   `INFOPATH`, pass `-d DIR`, or retry with `--emacs` when the manual is visible
+   in Emacs Info.
+4. On `E_EMACS_INFO`, verify that the Emacs server is running and
+   `emacsclient` can connect; otherwise omit `--emacs` and pass explicit
+   directories.
+5. On exit `2`, fix the path, permissions, compression, or resolution problem.
+6. On exit `3`, treat the manual as structurally incomplete. Use best-effort
    mode only when partial coverage is acceptable; use `--strict` when complete
    parsing is required.
 

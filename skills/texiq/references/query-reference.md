@@ -29,10 +29,12 @@ Options:
 --raw-output              emit a scalar text string without framing
 --max-results N           cap a rendered root collection; default 50
 --all-results             disable the root collection cap
+--emacs                   prepend active Emacs Info-directory-list
 ```
 
-Repeated `-d` directories precede `INFOPATH` in command-line order. A trailing
-separator in `INFOPATH` appends platform defaults.
+Precedence is repeated `-d` directories, then active Emacs directories when
+`--emacs` is present, then `INFOPATH`. A trailing separator in `INFOPATH`
+appends platform defaults.
 
 ## Selectors
 

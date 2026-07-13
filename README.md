@@ -15,7 +15,13 @@ texiq
 texiq dir '.search("indirect table")'
 texiq texinfo '.tree'
 texiq texinfo '.node("Info Format Indirect Table") | .text'
+texiq --emacs ellama '.nodes | map(.name)'
 ```
+
+Use `--emacs` when the desired manual is visible in Emacs Info but its
+directory is not present in the shell's `INFOPATH`. `texiq` asks the active
+Emacs server for `Info-directory-list` through `emacsclient`, preserving Emacs
+precedence. Explicit `-d` directories still take precedence over that list.
 
 The project implements the planned catalog, parser, graph, query, search, and
 rendering pipeline. The product contract is in [docs/PRD.md](docs/PRD.md), the design is in

@@ -5,6 +5,17 @@ manual.
 
 ## Discover from `(dir)Top`
 
+If a manual is registered only in the active Emacs session, include its Info
+directories explicitly:
+
+```sh
+texiq --emacs dir '.entries | filter(.manual == "ellama")'
+texiq --emacs ellama '.nodes | map(.name)'
+```
+
+`--emacs` requires a reachable Emacs server. For reproducible automation that
+does not depend on an editor session, continue to prefer explicit `-d` paths.
+
 ```sh
 texiq
 texiq dir '.categories | map(.name)'
@@ -41,7 +52,8 @@ when it truncates. Use slicing before `--all-results` whenever possible.
 | `E_QUERY_PARSE` | malformed query | use the byte position and supplied grammar hint |
 | `E_QUERY_TYPE` | selector/expression received the wrong value kind | inspect the previous stage or remove it |
 | `E_NODE_NOT_FOUND` | exact node lookup missed | run `.search("term")` or `.nodes | map(.name)` |
-| `E_MANUAL_RESOLVE` | manual/path was not found | inspect `texiq dir '.manuals'` or pass `-d DIR` |
+| `E_MANUAL_RESOLVE` | manual/path was not found | inspect `texiq dir '.manuals'`, pass `-d DIR`, or use `--emacs` for an Emacs-only manual |
+| `E_EMACS_INFO` | `emacsclient` could not provide active directories | start the server or use explicit `-d DIR` paths |
 | exit `3` | strict parse coverage failure | narrow scope or repair the named manual |
 
 For reproducible automation, pass explicit `-d` directories and reuse the same

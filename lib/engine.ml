@@ -6,6 +6,7 @@ type request =
   { scope : string option
   ; query : string option
   ; directories : string list
+  ; emacs : bool
   ; strict : bool
   ; format : Render.format
   ; raw_output : bool
@@ -498,9 +499,7 @@ let manual_diagnostic_lines manual =
       (Sexp.to_string_hum ([%sexp_of: Manual.Diagnostic.t] diagnostic)))
 ;;
 
-let execute request =
-  let environment = Stdlib.Sys.getenv_opt "INFOPATH" in
-  let info_path = Info_path.effective ~explicit:request.directories ~environment () in
+let execute_with_info_path request info_path =
   let directories = Info_path.directories info_path in
   let render value =
     Render.render
@@ -588,4 +587,26 @@ let execute request =
             with
             | Ok value -> success ~stdout:(render value) ~stderr ()
             | Error error -> failure ~stderr:(stderr @ [ error ]) 1)))
+;;
+
+let execute request =
+  let environment = Stdlib.Sys.getenv_opt "INFOPATH" in
+  let emacs_directories = if request.emacs then Emacs_info.directories () else Ok [] in
+  match emacs_directories with
+  | Error error ->
+    failure
+      ~stderr:
+        [ sprintf
+            "Error[E_EMACS_INFO]: %s\n\
+             Hint: start an Emacs server, verify emacsclient can connect, or omit \
+             --emacs and pass directories with --directory."
+            (Sexp.to_string_hum ([%sexp_of: Emacs_info.error] error))
+        ]
+      2
+  | Ok emacs_directories ->
+    Info_path.effective
+      ~explicit:(request.directories @ emacs_directories)
+      ~environment
+      ()
+    |> execute_with_info_path request
 ;;

@@ -58,7 +58,7 @@ raw text, JSON, JSONL, failure status, and byte-identical repeated queries.
 The reusable package smoke test verifies a built or installed executable:
 
 ```sh
-scripts/smoke_test.sh _build/default/bin/main.exe 1.0.0
+scripts/smoke_test.sh _build/default/bin/main.exe 1.1.0
 ```
 
 CI additionally installs `texiq.opam` into an opam switch, runs the smoke test
@@ -66,3 +66,7 @@ against the installed executable, and compares exact node output with GNU
 Info. A release tag must be `v` followed by
 the version in `dune-project`; release verification and both packaged-binary
 smoke tests must succeed before the publish job can run.
+
+The CLI cram layer uses a fake `emacsclient` to verify `--emacs` directory
+resolution and stable connection-failure diagnostics without depending on a
+developer's running Emacs server.

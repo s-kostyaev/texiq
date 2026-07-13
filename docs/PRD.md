@@ -1,6 +1,6 @@
 # Product requirements: texiq v1
 
-Status: implemented in v1.0.0
+Status: core implemented in v1.0.0; Emacs path integration added in v1.1.0
 License: MIT
 
 ## Summary
@@ -65,6 +65,7 @@ Common options:
 --raw-output              emit scalar strings without framing
 --max-results N           cap rendered collection items
 --all-results             disable the rendering cap
+--emacs                   prepend active Emacs Info directories
 ```
 
 No query renders a compact summary and the first discovery surface: catalog
@@ -135,10 +136,16 @@ byte offsets remain available separately.
 ## Info path semantics
 
 Repeated `-d/--directory` entries come first in command-line order. If
-`INFOPATH` is unset, `texiq` uses its existing conventional platform
+`--emacs` is present, `texiq` queries the active Emacs server through
+`emacsclient` and inserts its `Info-directory-list` after explicit directories
+and before `INFOPATH`. Emacs order is preserved. Failure to start or connect
+the client is a resolution error rather than a silent fallback.
+
+If `INFOPATH` is unset, `texiq` uses its existing conventional platform
 directories. A trailing path separator appends those defaults. Leading or
 doubled empty components are dropped instead of resolving to the current
-directory. Canonical duplicates retain their first occurrence.
+directory. Canonical duplicates retain their first occurrence. Without
+`--emacs`, no Emacs-specific discovery occurs.
 
 ## Info compatibility
 

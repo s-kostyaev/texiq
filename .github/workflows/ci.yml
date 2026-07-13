@@ -36,7 +36,7 @@ jobs:
         run: opam install . --with-test --yes
       - run: sudo apt-get update && sudo apt-get install --yes texinfo
       - name: Smoke-test the installed executable
-        run: opam exec -- scripts/smoke_test.sh "$(opam var bin)/texiq" 1.0.0
+        run: opam exec -- scripts/smoke_test.sh "$(opam var bin)/texiq" 1.1.0
       - name: Compare selected node text with GNU Info
         run: scripts/differential_test.sh "$(opam var bin)/texiq"
 

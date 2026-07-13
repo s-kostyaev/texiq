@@ -1,7 +1,7 @@
 (library
  (name texiq)
  (public_name texiq)
- (libraries core core_unix.filename_unix decompress.gz re2 yojson)
+ (libraries core core_unix core_unix.filename_unix decompress.gz re2 yojson)
  (inline_tests)
  (preprocess
   (pps ppx_jane)))

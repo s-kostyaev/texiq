@@ -4,6 +4,7 @@ type request =
   { scope : string option
   ; query : string option
   ; directories : string list
+  ; emacs : bool
   ; strict : bool
   ; format : Render.format
   ; raw_output : bool

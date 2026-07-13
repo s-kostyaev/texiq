@@ -26,6 +26,11 @@ let command =
          (listed string)
          ~aliases:[ "-d" ]
          ~doc:"DIR Prepend an Info search directory (repeatable)."
+     and emacs =
+       flag
+         "--emacs"
+         no_arg
+         ~doc:" Prepend the active Emacs Info-directory-list via emacsclient."
      and strict = flag "--strict" no_arg ~doc:" Fail on incomplete parse coverage."
      and format =
        flag
@@ -62,6 +67,6 @@ let command =
        in
        let max_results = if all_results then None else Some max_results in
        Engine.execute
-         { scope; query; directories; strict; format; raw_output; max_results }
+         { scope; query; directories; emacs; strict; format; raw_output; max_results }
        |> print_outcome)
 ;;

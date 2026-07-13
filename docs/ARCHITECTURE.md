@@ -55,6 +55,7 @@ Scope resolver -------- explicit path / Info name / merged directory
 
 ```text
 Diagnostic       stable codes, evidence, hints, and exit classification
+Emacs_info       bounded emacsclient adapter for active Info-directory-list
 Info_path        INFOPATH expansion, defaults, precedence, and explicit -d
 Source           path/name resolution and source identity
 Compression      transparent bounded decompression
@@ -142,6 +143,8 @@ invariants.
 - Read-only in v1.
 - No network access.
 - No automatic traversal of external-manual xrefs.
+- Emacs integration is explicit, read-only, bounded by the client timeout, and
+  never evaluates project- or user-provided Lisp.
 - Decompression and snippet sizes are bounded.
 - Symlinks and duplicate source directories are normalized explicitly.
 - Errors include source identity without dumping arbitrary manual content.
