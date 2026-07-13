@@ -62,11 +62,14 @@ version or publishing a release.
 
 Use this post-release audit before handoff:
 
-```sh
+```bash
+set -euo pipefail
 VERSION=$(sed -n 's/^(version \(.*\))$/\1/p' dune-project)
 TAG="v$VERSION"
 test "$(git rev-list -n 1 "$TAG")" = "$(git rev-parse HEAD)"
 test "$(gh run list --workflow release.yml --branch "$TAG" --limit 1 --json conclusion --jq '.[0].conclusion')" = success
+gh release view "$TAG" --json assets --jq '.assets[].name' | grep -Fxq texiq-linux-x86_64.tar.gz
+gh release view "$TAG" --json assets --jq '.assets[].name' | grep -Fxq texiq-macos-arm64.tar.gz
 gh release view "$TAG" --json tagName,url,assets
 git status --short --branch
 ```
